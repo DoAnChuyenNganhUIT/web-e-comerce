@@ -1,0 +1,160 @@
+global.router = require('express').Router();
+
+var router = global.router
+var User = require('../models/User');
+
+var mongoose = require("mongoose");
+
+
+
+module.exports.insertUser=(req, res)=>{
+        
+        User.getUserByEmail(req.body.email, (err,user)=>{
+                if(err) throw err;
+                if(user) {
+                        res.json({
+                                success: false,
+                                message:'tai khoan da ton tai'
+                        });
+                }
+                else if(!user){
+                        var NewUser = new User({
+                                email: req.body.email,
+                                password: req.body.password
+                        });
+        User.CreateUser(NewUser,(err, doc)=>{
+                if(err) { throw err
+                
+                } else {
+                        res.json({
+                                success: true,
+                                message: 'user them thanh cong'
+                        })
+                }
+                
+
+        })}
+
+})};
+
+module.exports.getUserId=function(req, res, next) {            
+    User.findById(require('mongoose').Types.ObjectId(req.query.id),
+    (err,pro)=>{
+        if(err){
+            res.json({
+                result  : "failed",
+                data    :[],
+                messege :`Err is ${err}`
+            });
+        }
+        else{
+            res.json({
+                result  :"successful",
+                data    :pro,
+                messege :"Query Id user success"
+            });
+        };
+    })
+  };
+
+  module.exports.updateUser=function(req,res,next){
+        let conditions = {};
+        if(mongoose.Types.ObjectId.isValid(req.body.id)==true){  //xac thuc thuoc tinh cua Oj
+                conditions._id = mongoose.Types.ObjectId(req.body.id);
+                
+        }
+        else{
+                res.json({
+                        result: 'failed',
+                        data : {},
+                        message: 'id khong dung'
+                })
+                
+        };
+        const options = {
+                new: true,   // tra ve du lieu da chuyen doi thay vi ban goc
+                multi: true
+            };
+        
+        let gtUdt = {};
+        // User.getUserByEmail(req.body.email, (err,user)=>{
+        //         if(err) throw err;
+        //         if(user) {
+        //                 var NewUser = new User({
+        //                         email: req.body.email,
+        //                         password: req.body.password
+        //                 });
+        //                 res.json({
+        //                         message:'hey'
+        //                 });
+        var NewUser= new User({
+                password: req.body.password
+        });
+        // User.CreateUser(NewUser,(err, doc)=>{
+        //         if(err) { throw err
+                
+        //         } else {
+        //                 console.log('doc');
+                        
+                        
+        //         };
+                
+
+        // });
+        
+        gtUdt.password=NewUser.password;
+        gtUdt.name = req.body.name;
+
+        
+        User.findOneAndUpdate(conditions,{$set: gtUdt},options,(err, dataUpdate)=>{
+                if (err) {
+                        res.json({
+                            result: "failed",
+                            data: {},
+                            messege: `Can not update .Error is : ${err}`
+                        });
+                    } else {
+                        User.CreateUser(dataUpdate,(err, doc)=>{
+                                if(err) { throw err
+                                
+                                } else {
+                                        console.log('doc');
+                                        res.json({
+                                                result: "ok",
+                                                data: doc,
+                                                messege: "Update successfully"
+                                            });
+                                        
+                                };
+                                
+                
+                        });
+                       
+                    }
+        })
+};
+
+
+module.exports.deleteUser=function(req, res, next){
+        User.findOneAndDelete({_id: mongoose.Types.ObjectId(req.body.id)},(err,user)=>{
+                if(err){
+                        res.json({
+                            result: "failed",
+                            messege:`khong the xoa . loi ${err}`
+                        });
+                        return;
+                    }
+                    if(!user){
+                        res.json({
+                            result: "failed",
+                            messege:"User khong ton tai"
+                        })
+                    }
+                    else {
+                        res.json({
+                            result: "ok",
+                            messege:"xoa thanh cong"
+                        })
+                    }
+        })
+};

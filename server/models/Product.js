@@ -20,7 +20,7 @@ var productSchema = new Schema({
         type: Date,
         default: Date.now,
     },
-    img : {
+    image_name : {
         type : String,
     },
     status : {

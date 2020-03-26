@@ -3,32 +3,18 @@ var router = global.router;
 var bcrypt = require('bcryptjs');
 var express = require('express');
 var passport = require('passport');
-var User = require('../mode/User');
+var User = require('../models/User');
 var jwt = require('jsonwebtoken');
 var configs = require('../configs/database');
-/* GET users listing. */
-// router.get('/', function(req, res, next) {
-//   res.send('respond with a resource');
-// });
 
+var controller = require('../controller/user.controller');
 
-router.post('/change-password', (req, res)=>{
+router.put('/change_password',controller.changePassword);
 
-    bcrypt.genSalt(10, (err,salt) => {
-        bcrypt.hash(req.body.password, salt, (err,hash)=> {
-            //if(err) throw err;
-           
-       
-    User.findOneAndUpdate({email: req.body.email},{password : hash}).exec()
-            .then((err, data)=>{
-                if(err) throw err;
-                res.json({
-                    success:true,
-                    data: data
-                })
-            })
-        
-    })
-})
-})
+router.post('/upload_image_profile', controller.uploadImageProfile);
+
+router.get('/open_image_profile', controller.openImageProfile);
+
+router.put('/change_pricture_profile',controller.changePrictureProfile);
+
 module.exports = router;

@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require('express-session');
 var cors = require('cors');
+var admin = require('./routes/admin');
 var index = require('./routes/index');
 var usersRouter = require('./routes/users');
 var category = require('./routes/category');
@@ -14,13 +15,16 @@ var config =require('./configs/database');
 
 //var userRouter = require("./routes/user.router");
 
-
+global.router = require('express').Router();
+var router = global.router;
 
 var app = express();
 
 var mongoose = require('mongoose');
 mongoose.Promise= global.Promise;  //cho ta xai cu phap then
-mongoose.connect("mongodb://localhost:27017/CSDL").then(
+// var uri = 'mongodb://localhost:27017/CSDL';
+var uri = 'mongodb+srv://cloud1:CmG9wJ3ZWOyOLGrC@cluster0-ubg6z.mongodb.net/test?retryWrites=true&w=majority';
+mongoose.connect(uri).then(
   () => {
     console.log("Connect to CSDL successful")
   },
@@ -45,6 +49,7 @@ app.use('/', index);
 app.use('/users', usersRouter);
 app.use('/',category);
 app.use('/',authencation);
+app.use('/',admin);
 //app.use("/",userRouter);
 
 

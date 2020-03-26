@@ -15,7 +15,10 @@ var userSchema = new Schema({
         type    : String,
         required: true
     },
-    
+    image_name :{
+        type : String,
+    },
+
     name : {
         type    : String,
     },
