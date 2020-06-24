@@ -23,6 +23,7 @@ router.put("/update_product", controller.updateProduct);
 
 router.delete("/delete_product", controller.deleteProduct);
 
+
 router.post("/upload_images", controller.uploadImages);
 
 router.get("/open_image", controller.openImage);

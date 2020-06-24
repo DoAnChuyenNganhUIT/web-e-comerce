@@ -4,6 +4,7 @@ var router = global.router
 var User = require('../models/User');
 
 var mongoose = require("mongoose");
+const { use } = require('passport');
 
 
 
@@ -57,10 +58,35 @@ module.exports.getUserId=function(req, res, next) {
     })
   };
 
+exports.getListUser = (req, res, next) => {
+        User.find({}).select({
+                name: 1,
+                email: 1,
+                image_name: 1,
+                role: 1
+        }).exec((err,user) =>{
+                if(err){
+                        res.json({
+                                result: false,
+                                data: [],
+                                message: 'err'
+                        });
+                }
+                else {
+                        res.json({
+                                result: true,
+                                count: user.length,
+                                data: user,
+                                message: 'query list user success'
+                        })
+                }
+        })
+}
+
   module.exports.updateUser=function(req,res,next){
         let conditions = {};
-        if(mongoose.Types.ObjectId.isValid(req.body.id)==true){  //xac thuc thuoc tinh cua Oj
-                conditions._id = mongoose.Types.ObjectId(req.body.id);
+        if(mongoose.Types.ObjectId.isValid(req.params.id)==true){  //xac thuc thuoc tinh cua Oj
+                conditions._id = mongoose.Types.ObjectId(req.params.id);
                 
         }
         else{
@@ -87,9 +113,14 @@ module.exports.getUserId=function(req, res, next) {
         //                 res.json({
         //                         message:'hey'
         //                 });
-        var NewUser= new User({
-                password: req.body.password
-        });
+        if(req.body.password){
+                var NewUser= new User({
+                        password: req.body.password
+                });
+                gtUdt.password=NewUser.password;
+        }
+        
+       
         // User.CreateUser(NewUser,(err, doc)=>{
         //         if(err) { throw err
                 
@@ -102,7 +133,7 @@ module.exports.getUserId=function(req, res, next) {
 
         // });
         
-        gtUdt.password=NewUser.password;
+        
         gtUdt.name = req.body.name;
 
         
@@ -113,12 +144,11 @@ module.exports.getUserId=function(req, res, next) {
                             data: {},
                             messege: `Can not update .Error is : ${err}`
                         });
-                    } else {
+                    } else if(req.body.password){
                         User.CreateUser(dataUpdate,(err, doc)=>{
                                 if(err) { throw err
                                 
                                 } else {
-                                        console.log('doc');
                                         res.json({
                                                 result: "ok",
                                                 data: doc,
@@ -130,6 +160,12 @@ module.exports.getUserId=function(req, res, next) {
                 
                         });
                        
+                    } else {
+                        res.json({
+                                result: "ok",
+                                data: dataUpdate,
+                                messege: "Update successfully"
+                            });
                     }
         })
 };

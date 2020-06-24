@@ -15,7 +15,8 @@ router.post('/insert_user', controller.insertUser);
 
 router.get('/get_user_id/:id', controller.getUserId);
 
-router.put('/update_user', controller.updateUser);
+router.get('/list_users', controller.getListUser);
+router.put('/update_user/:id', controller.updateUser);
 
 router.post('/post_image', uploadFileMiddleware, (req, res, next) => {
     const file = req.file
