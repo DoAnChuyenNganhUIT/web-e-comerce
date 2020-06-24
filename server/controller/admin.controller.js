@@ -38,20 +38,20 @@ module.exports.insertUser=(req, res)=>{
 })};
 
 module.exports.getUserId=function(req, res, next) {            
-    User.findById(require('mongoose').Types.ObjectId(req.query.id),
+    User.findById(require('mongoose').Types.ObjectId(req.params.id),
     (err,pro)=>{
         if(err){
             res.json({
                 result  : "failed",
                 data    :[],
-                messege :`Err is ${err}`
+                message :`Err is ${err}`
             });
         }
         else{
             res.json({
                 result  :"successful",
                 data    :pro,
-                messege :"Query Id user success"
+                message :"Query Id user success"
             });
         };
     })

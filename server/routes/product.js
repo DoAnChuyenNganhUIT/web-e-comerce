@@ -2,7 +2,7 @@ var router = global.router;
 let product = require("../models/Product");
 var mongoose = require("mongoose");
 let fs = require("fs");
-
+const {isAuth} = require('../controller/authencation.controller');
 /* GET users listing. */
 
 var controller = require("../controller/product.controller");
@@ -12,7 +12,9 @@ router.post("/insert_product", controller.insertProduct);
 router.get("/list_product", controller.listProduct);
 
 // xuat san pham theo id
-router.get("/get_product_id", controller.getProductId);
+router.get("/get_product_id/:id", controller.getProductId);
+
+
 
 // xuat san pham theo tu khoa tim kiem
 router.get("/find_key", controller.findKey);

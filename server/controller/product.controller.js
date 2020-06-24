@@ -11,9 +11,10 @@ module.exports.insertProduct=function(req, res, next) {
         name        : req.body.name,
         kind        : req.body.kind,
         price       : req.body.price,
+        image_name  : req.body.image_name
         
     });
-    newProd.save(function(err){
+    newProd.save(function(err,product){
         if(err){
             res.json({
                 result  : "failed",
@@ -27,9 +28,11 @@ module.exports.insertProduct=function(req, res, next) {
                 data    :{
                     name        : req.body.name,
                     kind        : req.body.kind,
-                    price       : req.body.price
+                    price       : req.body.price,
+                    image_name  : req.body.image_name,
+                    rating      : product.rating
                 },
-                messege :"Insert product success"
+                message :"Insert product success"
             });
         };
     })
@@ -37,47 +40,52 @@ module.exports.insertProduct=function(req, res, next) {
   };
 
   module.exports.listProduct=function(req, res, next) {  //xuat tat ca ds san pham
-    product.find({}).limit(50).sort({name:1}).select({
+    product.find({}).sort({name:1}).select({
         name        : 1,
         kind        : 1,
         price       : 1,
         Create_date : 1,
         status      : 1,
+        image_name  :1
     }).exec(function(err,pro){
         if(err){
             res.json({
                 result  : "failed",
                 data    :[],
-                messege :`Err is ${err}`
+                message :`Err is ${err}`
             });
         }
         else{
             res.json({
                 result  :"successful",
-                data    :pro,
                 count   :pro.length,
-                messege :"Query list of product success"
+                data    :pro,
+                
+                message :"Query list of product success"
             });
         };
     })
 };
 
+
 // xuat san pham theo id
-module.exports.getProductId =function(req, res, next) {            
-    product.findById(require('mongoose').Types.ObjectId(req.query.id),
+module.exports.getProductId =function(req, res, next) {   
+    const {id = ''} = req.params; 
+
+    product.findById(id,
     (err,pro)=>{
         if(err){
             res.json({
                 result  : "failed",
                 data    :[],
-                messege :`Err is ${err}`
+                message :`Err is ${err}`
             });
         }
         else{
             res.json({
                 result  :"successful",
                 data    :pro,
-                messege :"Query Id product success"
+                message :"Query Id product success"
             });
         };
     })
@@ -90,7 +98,7 @@ module.exports.getProductId =function(req, res, next) {
         res.json({
             result  :"failed",
             data    :[],
-            messege :"Name khong hop le"
+            message :"Name khong hop le"
         })
     };
     var key = {
@@ -109,7 +117,7 @@ module.exports.getProductId =function(req, res, next) {
             res.json({
                 result  : "failed",
                 data    :[],
-                messege :`Err is ${err}`
+                message :`Err is ${err}`
             });
         }
         else

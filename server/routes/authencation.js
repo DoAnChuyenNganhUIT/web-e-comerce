@@ -1,17 +1,16 @@
-var express = require("express");
-var passport = require("passport");
-var User = require("../models/User");
-var jwt = require("jsonwebtoken");
-var configs = require("../configs/database");
+const express = require('express');
+const passport = require('passport');
+const User = require('../models/User');
+const jwt = require('jsonwebtoken');
+const configs = require('../configs/database');
+const {isAuth} = require('../middleware/auth')
 
-var router = global.router;
+const router = global.router;
 
-var controller = require("../controller/authencation.controller");
+const controller = require('../controller/authencation.controller');
 
-router.post("/signup", controller.signUp);
-router.post("/login", controller.logIn);
-
-router.get("/profile", controller.proFile);
-router.get("/logout", controller.logOut);
+router.post('/signup', controller.signUp);
+router.post('/login', controller.logIn);
+router.get('/validate', isAuth, controller.validate);
 
 module.exports = router;

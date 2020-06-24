@@ -1,5 +1,4 @@
 var router = global.router;
-var bcrypt = require('bcryptjs');
 var express = require('express');
 var passport = require('passport');
 var User = require('../models/User');
@@ -8,6 +7,7 @@ var configs = require('../configs/database');
 let fs = require('fs');
 var mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
+var path = require("path");
 
 var crypto = require('crypto');
 /* GET users listing. */
@@ -100,7 +100,7 @@ module.exports.uploadImageProfile = (req, res, next) => {
       res.json({
         result: 'failed',
         data: {},
-        messege: `Cannot upload images.Error is : ${err}`,
+        message: `Cannot upload images.Error is : ${err}`,
       });
     }
 

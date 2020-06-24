@@ -21,6 +21,10 @@ var productSchema = new Schema(
     image_name: {
       type: String,
     },
+    rating: {
+      type: Number,
+      default: 0,
+    },
     status: {
       type: [
         {

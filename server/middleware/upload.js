@@ -3,13 +3,12 @@
 // var mkdirp = require('mkdirp');
 // var mime = require('mime');
 // var { includes } = require('lodash');
-// var Response = require('server/utils/response');
 
 // var dir = `uploads/${new Date().getFullYear()}/${new Date().getMonth()}`;
 // var storage = multer.diskStorage({
 //     destination: function(req, file, cb) {
 //         !fs.existsSync(dir) && mkdirp(dir);
-//         cb(null, dir);
+//         cb(null, './uploads');
 //     },
 //     filename: function(req, file, cb) {
 //         var filename = `${
@@ -18,15 +17,18 @@
 //         cb(null, filename);
 //     }
 // });
-// var fileFilter = function(req, file, cb) {
+// var fileFilter = function(req,res, file, cb) {
 //     var allowedMimes = ['image/jpeg', 'image/pjpeg', 'image/png'];
 //     if (includes(allowedMimes, file.mimetype)) {
 //         cb(null, true);
 //     } else {
 //         cb(
-//             new Response(400, {
-//                 errors: { picture: 'Định dạng ảnh không hợp lệ' }
+//             res.status(400).json({
+//                 message: 'picture: định dạng không hợp lệ'
 //             })
+//             // new Response(400, {
+//             //     errors: { picture: 'Định dạng ảnh không hợp lệ' }
+//             // })
 //         );
 //     }
 // };
@@ -36,6 +38,7 @@
 //     fileFilter
 // });
 
+// exports.uploadFileMiddleware = upload.single('file');
 // exports.uploadAvatarMiddleware = upload.single('avatar');
 // exports.uploadImageMiddleware = upload.single('image');
 // exports.uploadEventMiddleware = upload.single('pictureFile');
@@ -48,3 +51,20 @@
 //         }).returnResponse(res);
 //     }
 // });
+
+//
+
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, './uploads')
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + '-' + Date.now()+ '.jpg')
+    }
+})
+
+const upload = multer({storage: storage})
+
+exports.uploadFileMiddleware = upload.single('file');

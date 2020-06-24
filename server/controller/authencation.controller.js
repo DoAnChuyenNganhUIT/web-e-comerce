@@ -20,14 +20,12 @@ module.exports.signUp=(req, res)=>{
                 else if(!user){
                         var NewUser = new User({
                                 email: req.body.email,
-                                password: req.body.password
+                                password: req.body.password,
+                                name:req.body.name
                         });
         User.CreateUser(NewUser,(err, doc)=>{
-                if(err) { throw err
-                        // res.json({
-                        //         success: false,
-                        //         message: 'user dang ki khong thanh cong'
-                        // });
+                if(err) { 
+                        throw err
                 } else {
                         res.json({
                                 success: true,
@@ -57,7 +55,7 @@ module.exports.logIn=(req,res)=>{
                                 res.json({
                                         success:true,
                                         message : {
-                                                token :'JWT ' + token,
+                                                token :token,
                                                 user: user
                                         }
                                 });
@@ -72,11 +70,80 @@ module.exports.logIn=(req,res)=>{
         })
 };
 
-module.exports.proFile=passport.authenticate('jwt', { session: false }), (req, res)=>{
+exports.isAuth = async (req, res, next) => {
+        const tokenFromClient = req.body.token || req.query.token || req.headers['x-access-token'];
+
+        const verifyToken = (token, secretKey) => {
+                return new Promise((resolve, reject) => {
+                    jwt.verify(token, secretKey, (error, decoded) => {
+                        if(error) {
+                            return reject(error);
+                        }
+                        resolve(decoded)
+                    })
+                })
+            }
+
+        if (tokenFromClient) {
+            try {
+                const decoded = await verifyToken(tokenFromClient, configs.secret);
+    
+                req.jwtDecoded = decoded;
+
+               console.log(decoded)
+    
+                // Access next controller
+                next();
+    
+            } catch (error) {
+    
+                return res.status(401).json({
+                    message: 'Unauthorized.'
+                })
+            }
+        } else {
+            return res.status(403).send({
+                message: 'No token provided'
+            })
+        }
+    }
+
+exports.validate = async (req, res, next) => {
+        const verifyToken = (token, secretKey) => {
+                return new Promise((resolve, reject) => {
+                  jwt.verify(token, secretKey, (error, decoded) => {
+                    if (error) {
+                      return reject(error);
+                    }
+                    resolve(decoded);
+                  });
+                });
+              };
+            
+              const decoded = await verifyToken(req.query.token, configs.secret);
+            
+              req.jwtDecoded = decoded;
+            
+              if (decoded) {
+                res.json({
+                        success: true,
+                        message: 'ok',
+                        data: decoded,
+                });
+              } else {
+                res.json({
+                  message: 'error',
+                });
+              }
+}
+ 
+
+module.exports.profile=passport.authenticate('jwt', { session: false }), (req, res)=>{
         res.json({user : user.req})
 };
 module.exports.logOut=(req,res)=>{
         req.logout();
         res.redirect('/');
 };
+
 
