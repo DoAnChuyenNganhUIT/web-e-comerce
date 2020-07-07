@@ -1,3 +1,4 @@
 module.exports = {
-    'secret' : 'voduytan'
+    'secret' : 'voduytan',
+    'API' : 'https://web-bh-api.herokuapp.com'
 }

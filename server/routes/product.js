@@ -2,7 +2,7 @@ var router = global.router;
 let product = require("../models/Product");
 var mongoose = require("mongoose");
 let fs = require("fs");
-const {isAuth} = require('../controller/authencation.controller');
+const {isAuth} = require('../controller/authentication.controller');
 /* GET users listing. */
 
 var controller = require("../controller/product.controller");
@@ -26,5 +26,5 @@ router.delete("/delete_product", controller.deleteProduct);
 
 router.post("/upload_images", controller.uploadImages);
 
-router.get("/open_image", controller.openImage);
+router.get("/open_image/:image_name", controller.openImage);
 module.exports = router;

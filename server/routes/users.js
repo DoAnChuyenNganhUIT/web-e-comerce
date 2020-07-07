@@ -12,9 +12,9 @@ router.put("/change_password", controller.changePassword);
 
 router.post("/upload_image_profile", controller.uploadImageProfile);
 
-router.get("/open_image_profile", controller.openImageProfile);
+router.get("/open_image_profile/:image_name", controller.openImageProfile);
 
-router.put("/change_pricture_profile", controller.changePrictureProfile);
+router.put("/change_picture_profile/:id", controller.changePictureProfile);
 
 router.post("/forgot_password", controller.forgotPassword);
 

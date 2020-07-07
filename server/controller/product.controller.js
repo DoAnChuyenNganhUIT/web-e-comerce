@@ -2,8 +2,8 @@ var router = global.router;
 let product = require('../models/Product');
 var mongoose = require("mongoose")
 let fs = require('fs');
+const {API} = require('../configs/database');
 
-/* GET users listing. */
 
 
 module.exports.insertProduct=function(req, res, next) {
@@ -17,14 +17,14 @@ module.exports.insertProduct=function(req, res, next) {
     newProd.save(function(err,product){
         if(err){
             res.json({
-                result  : "failed",
+                result  : false,
                 data    :{},
-                messege :`Err is ${err}`
+                message :`Err is ${err}`
             });
         }
         else{
             res.json({
-                result  :"successful",
+                result  :true,
                 data    :{
                     name        : req.body.name,
                     kind        : req.body.kind,
@@ -46,18 +46,19 @@ module.exports.insertProduct=function(req, res, next) {
         price       : 1,
         Create_date : 1,
         status      : 1,
-        image_name  :1
+        image_name  :1,
+        description: 1
     }).exec(function(err,pro){
         if(err){
             res.json({
-                result  : "failed",
+                result  : false,
                 data    :[],
                 message :`Err is ${err}`
             });
         }
         else{
             res.json({
-                result  :"successful",
+                result  :true,
                 count   :pro.length,
                 data    :pro,
                 
@@ -76,14 +77,14 @@ module.exports.getProductId =function(req, res, next) {
     (err,pro)=>{
         if(err){
             res.json({
-                result  : "failed",
+                result  : false,
                 data    :[],
                 message :`Err is ${err}`
             });
         }
         else{
             res.json({
-                result  :"successful",
+                result  :true,
                 data    :pro,
                 message :"Query Id product success"
             });
@@ -96,7 +97,7 @@ module.exports.getProductId =function(req, res, next) {
   module.exports.findKey=function(req, res, next) {
     if(!req.query.name){
         res.json({
-            result  :"failed",
+            result  :false,
             data    :[],
             message :"Name khong hop le"
         })
@@ -115,7 +116,7 @@ module.exports.getProductId =function(req, res, next) {
     }).exec(function(err,pro){
         if(err){
             res.json({
-                result  : "failed",
+                result  : false,
                 data    :[],
                 message :`Err is ${err}`
             });
@@ -124,18 +125,18 @@ module.exports.getProductId =function(req, res, next) {
         {
             if(pro.length>0){
             res.json({
-                result  :"successful",
+                result  :true,
                 data    :pro,
                 count   :pro.length,
-                messege :"tim kiem thanh cong"
+                message :"tim kiem thanh cong"
             });
             }
             else{
                 res.json({
-                    result  :"failed",
+                    result  :false,
                     data    : [],
                     
-                    messege :"sai ten tim kiem"
+                    message :"sai ten tim kiem"
                 }); 
             }
         };
@@ -148,9 +149,9 @@ module.exports.updateProduct=function(req,res,next){
     if(mongoose.Types.ObjectId.isValid(req.body.id)==true){  //xac thuc thuoc tinh cua Oj
         conditions._id = mongoose.Types.ObjectId(req.body.id);
     } else res.json({
-        result: "failed",
+        result: false,
         data: {},
-        messege: "Id khong dung"
+        message: "Id khong dung"
     });
 
     let gtUdt = {};
@@ -170,8 +171,10 @@ module.exports.updateProduct=function(req,res,next){
         //Ex: http://localhost:3000/open_image?image_name=ten
         const serverName = require("os").hostname();
         const serverPort = require("../app").settings.port;
-        gtUdt.image_name = `${serverName}:${serverPort}/open_image?image_name=${req.body.image_name}`
+        //gtUdt.image_name = `${serverName}:${serverPort}/open_image?image_name=${req.body.image_name}`
+        gtUdt.image_name = `${API}/open_image/${req.body.image_name}`
     }
+
 
     //gan category cho san pham
     if (mongoose.Types.ObjectId.isValid(req.body.category_id) == true) {
@@ -180,15 +183,15 @@ module.exports.updateProduct=function(req,res,next){
     product.findOneAndUpdate(conditions, {$set: gtUdt}, options, (err, updatedPr) => {
         if (err) {
             res.json({
-                result: "failed",
+                result: false,
                 data: {},
-                messege: `Can not update .Error is : ${err}`
+                message: `Can not update .Error is : ${err}`
             });
         } else {
             res.json({
-                result: "ok",
+                result: true,
                 data: updatedPr,
-                messege: "Update successfully"
+                message: "Update successfully"
             });
         }
     })
@@ -198,21 +201,21 @@ module.exports.deleteProduct=(req, res, next)=>{
     product.findOneAndDelete({_id: mongoose.Types.ObjectId(req.body.id)},(err,user)=>{
         if(err){
             res.json({
-                result: "failed",
-                messege:`khong the xoa . loi ${err}`
+                result: false,
+                message:`khong the xoa . loi ${err}`
             });
             return;
         }
         if(!user){
             res.json({
-                result: "failed",
-                messege:"san pham khong ton tai"
+                result: false,
+                message:"san pham khong ton tai"
             })
         }
         else {
             res.json({
-                result: "ok",
-                messege:"xoa thanh cong"
+                result: true,
+                message:"xoa thanh cong"
             })
         }
     }
@@ -230,9 +233,9 @@ module.exports.uploadImages= (req, res, next) => {
     form.parse(req, (err, fields, files) => {
         if (err) {
             res.json({
-                result: "failed",
+                result: false,
                 data: {},
-                messege: `Cannot upload images.Error is : ${err}`
+                message: `Cannot upload images.Error is : ${err}`
             });
         }
         
@@ -250,29 +253,29 @@ module.exports.uploadImages= (req, res, next) => {
                 fileNames.push(eachFile.path.split('\\')[1]);
             });
             res.json({
-                result: "ok",
+                result: true,
                 data: fileNames,
                 numberOfImages: fileNames.length,
-                messege: "Upload images successfully"
+                message: "Upload images successfully"
             });
         } else {
             res.json({
-                result: "failed",
+                result: false,
                 data: {},
                 numberOfImages: 0,
-                messege: "No images to upload !"
+                message: "No images to upload !"
             });
         }
     });
 };
 
 module.exports.openImage= (req, res, next) => {
-    let imageName = "uploads/" + req.query.image_name;
+    let imageName = "uploads/" + req.params.image_name;
     fs.readFile(imageName, (err, imageData) => {
         if (err) {
             res.json({
-                result: "failed",
-                messege: `Cannot read image.Error is : ${err}`
+                result: false,
+                message: `Cannot read image.Error is : ${err}`
             });
             return;
         }

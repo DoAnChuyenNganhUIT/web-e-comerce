@@ -8,6 +8,7 @@ let fs = require('fs');
 var mongoose = require('mongoose');
 const nodemailer = require('nodemailer');
 var path = require("path");
+const {API} = require('../configs/database');
 
 var crypto = require('crypto');
 /* GET users listing. */
@@ -135,7 +136,7 @@ module.exports.uploadImageProfile = (req, res, next) => {
 };
 
 module.exports.openImageProfile = (req, res, next) => {
-  let imageName = 'uploads/' + req.query.image_name;
+  let imageName = 'uploads/' + req.params.image_name;
   fs.readFile(imageName, (err, imageData) => {
     if (err) {
       res.json({
@@ -149,11 +150,11 @@ module.exports.openImageProfile = (req, res, next) => {
   });
 };
 
-module.exports.changePrictureProfile = function (req, res, next) {
+module.exports.changePictureProfile = function (req, res, next) {
   let conditions = {}; // la 1 object
-  if (mongoose.Types.ObjectId.isValid(req.body.id) == true) {
+  if (mongoose.Types.ObjectId.isValid(req.params.id) == true) {
     //xac thuc thuoc tinh cua Oj
-    conditions._id = mongoose.Types.ObjectId(req.body.id);
+    conditions._id = mongoose.Types.ObjectId(req.params.id);
   } else
     res.json({
       result: 'failed',
@@ -173,7 +174,7 @@ module.exports.changePrictureProfile = function (req, res, next) {
     //Ex: http://localhost:3000/open_image?image_name=ten
     const serverName = require('os').hostname();
     const serverPort = require('../app').settings.port;
-    gtUdt.image_name = `${serverName}:${serverPort}/open_image?image_name=${req.body.image_name}`;
+    gtUdt.image_name = `${API}/open_image/${req.body.image_name}`;
   }
 
   //gan category cho san pham
@@ -251,6 +252,7 @@ module.exports.forgotPassword = async (req, res, next) => {
 
 exports.resetPassword = async (req, res, next) => {
   // 1) Get user based on token email
+  
   const hashedToken = crypto
     .createHash('sha256')
     .update(req.params.token)

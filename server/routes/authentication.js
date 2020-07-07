@@ -7,10 +7,10 @@ const {isAuth} = require('../middleware/auth')
 
 const router = global.router;
 
-const controller = require('../controller/authencation.controller');
+const controller = require('../controller/authentication.controller');
 
 router.post('/signup', controller.signUp);
 router.post('/login', controller.logIn);
-router.get('/validate', isAuth, controller.validate);
+router.get('/validate/:token', controller.validate);
 
 module.exports = router;

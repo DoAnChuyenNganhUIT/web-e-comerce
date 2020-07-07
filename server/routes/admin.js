@@ -29,7 +29,11 @@ router.post('/post_image', uploadFileMiddleware, (req, res, next) => {
       return next(error)
     }
       res.json({
-          message: 'OK'
+          message: 'OK',
+          result: true,
+          name: file.filename
+
+
       })
     
   });

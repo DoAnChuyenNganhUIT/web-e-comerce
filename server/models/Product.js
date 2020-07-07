@@ -34,6 +34,11 @@ var productSchema = new Schema(
       ],
       default: ['available'],
     },
+    
+      description: {
+        type: String
+      },
+    
     categoryId: Schema.ObjectId,
   },
   { collection: 'product' }

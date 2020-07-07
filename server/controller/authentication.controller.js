@@ -54,9 +54,9 @@ module.exports.logIn=(req,res)=>{
                                 var token = jwt.sign(user.toJSON(), configs.secret, {expiresIn: 3600})
                                 res.json({
                                         success:true,
-                                        message : {
-                                                token :token,
-                                                user: user
+                                        message : 'Dang nhap thanh cong',
+                                        data: {
+                                                token: token
                                         }
                                 });
                         }else {
@@ -90,7 +90,7 @@ exports.isAuth = async (req, res, next) => {
     
                 req.jwtDecoded = decoded;
 
-               console.log(decoded)
+               
     
                 // Access next controller
                 next();
@@ -120,11 +120,10 @@ exports.validate = async (req, res, next) => {
                 });
               };
             
-              const decoded = await verifyToken(req.query.token, configs.secret);
+        const decoded = await verifyToken(req.params.token, configs.secret);
             
-              req.jwtDecoded = decoded;
-            
-              if (decoded) {
+        req.jwtDecoded = decoded;
+        if (decoded) {
                 res.json({
                         success: true,
                         message: 'ok',
