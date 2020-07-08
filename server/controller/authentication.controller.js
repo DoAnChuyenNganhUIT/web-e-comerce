@@ -119,21 +119,31 @@ exports.validate = async (req, res, next) => {
                   });
                 });
               };
-            
-        const decoded = await verifyToken(req.params.token, configs.secret);
-            
-        req.jwtDecoded = decoded;
-        if (decoded) {
-                res.json({
-                        success: true,
-                        message: 'ok',
-                        data: decoded,
-                });
-              } else {
-                res.json({
-                  message: 'error',
-                });
-              }
+        if(req.params.token){
+                try {
+                        let decoded = await verifyToken(req.params.token, configs.secret);
+                        req.jwtDecoded = decoded;
+                        if (decoded) {
+                                res.json({
+                                        success: true,
+                                        message: 'ok',
+                                        data: decoded,
+                                });
+                              } else {
+                                res.json({
+                                  message: 'error',
+                                });
+                              }
+                } catch (error) {
+                        res.json({
+                                success: false,
+                                message: error
+                        })
+                }
+        }
+        
+        
+       
 }
  
 

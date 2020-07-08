@@ -38,7 +38,7 @@ router.post('/post_image', uploadFileMiddleware, (req, res, next) => {
     
   });
 
-router.delete('/delete_user', controller.deleteUser);
+router.delete('/delete_user/:id', controller.deleteUser);
 
 module.exports = router;
 //router.put('/suaUser')

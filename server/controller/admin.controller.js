@@ -172,7 +172,7 @@ exports.getListUser = (req, res, next) => {
 
 
 module.exports.deleteUser=function(req, res, next){
-        User.findOneAndDelete({_id: mongoose.Types.ObjectId(req.body.id)},(err,user)=>{
+        User.findOneAndDelete({_id: mongoose.Types.ObjectId(req.params.id)},(err,user)=>{
                 if(err){
                         res.json({
                             result: "failed",
