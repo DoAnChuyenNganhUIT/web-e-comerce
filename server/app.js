@@ -6,6 +6,7 @@ var logger = require("morgan");
 var session = require("express-session");
 var cors = require("cors");
 var admin = require("./routes/admin");
+const cart = require('./routes/cart');
 var index = require("./routes/index");
 var usersRouter = require("./routes/users");
 var category = require("./routes/category");
@@ -39,6 +40,12 @@ mongoose.connect(uri).then(
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
+app.use(session({
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: true
+}))
+
 app.use(cors());
 app.use(logger("dev"));
 app.use(express.json());
@@ -51,7 +58,8 @@ app.use("/users", usersRouter);
 app.use("/", category);
 app.use("/", authentication);
 app.use("/", admin);
-app.use('/', MyImage)
+app.use('/', MyImage);
+app.use('/', cart);
 
 //app.use("/",userRouter);
 

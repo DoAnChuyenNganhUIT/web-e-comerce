@@ -11,7 +11,12 @@ const { use } = require('passport');
 module.exports.insertUser=(req, res)=>{
         
         User.getUserByEmail(req.body.email, (err,user)=>{
-                if(err) throw err;
+                if(err) {
+                        res.json({
+                                result: false,
+                                message: `Err is ${err}`
+                        })
+                };
                 if(user) {
                         res.json({
                                 success: false,
@@ -21,10 +26,15 @@ module.exports.insertUser=(req, res)=>{
                 else if(!user){
                         var NewUser = new User({
                                 email: req.body.email,
+                                name: req.body.name,
                                 password: req.body.password
                         });
         User.CreateUser(NewUser,(err, doc)=>{
-                if(err) { throw err
+                if(err) { 
+                        res.json({
+                                result: false,
+                                message: `Err is ${err}`
+                })
                 
                 } else {
                         res.json({

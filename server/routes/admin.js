@@ -7,8 +7,6 @@ const {isAuth} = require('../middleware/auth')
 const {uploadFileMiddleware} = require ('../middleware/upload')
 const jwt = require('jsonwebtoken');
 
-var mongoose = require('mongoose');
-
 var controller = require('../controller/admin.controller');
 
 router.post('/insert_user', controller.insertUser);

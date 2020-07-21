@@ -58,8 +58,9 @@ module.exports.CreateUser = (newUser, cb) => {
   });
 };
 
-module.exports.comparePassword = (Mypassword, hash, cb) => {
-  bcrypt.compare(Mypassword, hash, (err, isMatch) => {
+module.exports.comparePassword = (myPassword, hash, cb) => {
+  console.log(myPassword);
+  bcrypt.compare(myPassword, hash, (err, isMatch) => {
     if (err) throw err;
     cb(null, isMatch);
   });

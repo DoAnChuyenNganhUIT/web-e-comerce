@@ -10,7 +10,12 @@ var router = global.router;
 module.exports.signUp=(req, res)=>{
         
         User.getUserByEmail(req.body.email, (err,user)=>{
-                if(err) throw err;
+                if(err) {
+                        res.json({
+                                result: false,
+                                message: `Err is ${err}`
+                        })
+                };
                 if(user) {
                         res.json({
                                 success: false,
@@ -24,8 +29,12 @@ module.exports.signUp=(req, res)=>{
                                 name:req.body.name
                         });
         User.CreateUser(NewUser,(err, doc)=>{
-                if(err) { 
-                        throw err
+                if(err){
+                                res.json({
+                                        result: false,
+                                        message: `Err is ${err}`
+                                })
+                        
                 } else {
                         res.json({
                                 success: true,
@@ -37,35 +46,53 @@ module.exports.signUp=(req, res)=>{
         })}
 
 })};
-module.exports.logIn=(req,res)=>{
+module.exports.logIn= async (req,res, next)=>{
         var email = req.body.email;
         var password = req.body.password;
-        User.getUserByEmail(email, (err,user)=>{
-                if(err) throw err;
+         User.getUserByEmail(email, (err,user)=>{
+                console.log(user)
+                
+                if(err) {
+                        res.json({
+                                result: false,
+                                message: `Err is ${err}`
+                        })
+                
+                };
                 if(!user) {
                         res.json({
                                 success: false,
                                 message:'tai khoan khong dung'
                         });
                 }
-                User.comparePassword(password, user.password, (err, isMatch) =>{
-                        if(err) throw err;
-                        if(isMatch) {
-                                var token = jwt.sign(user.toJSON(), configs.secret, {expiresIn: 3600})
-                                res.json({
-                                        success:true,
-                                        message : 'Dang nhap thanh cong',
-                                        data: {
-                                                token: token
-                                        }
-                                });
-                        }else {
-                                res.json({
-                                        success: false,
-                                        message: 'mat khau khong dung'
-                                });
-                        }
-                })
+                console.log(password);
+                if(user){
+                        User.comparePassword(req.body.password, user.password, (err, isMatch) =>{
+                                if(err) {
+                                        res.json({
+                                                success: false,
+                                                message: `Err is ${err}`
+                                        })
+                                
+                                };
+                                if(isMatch) {
+                                        var token = jwt.sign(user.toJSON(), configs.secret)
+                                        res.json({
+                                                success:true,
+                                                message : 'Dang nhap thanh cong',
+                                                data: {
+                                                        token: token
+                                                }
+                                        });
+                                }else {
+                                        res.json({
+                                                success: false,
+                                                message: 'mat khau khong dung'
+                                        });
+                                }
+                        })
+                }
+                
 
         })
 };
