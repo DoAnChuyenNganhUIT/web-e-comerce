@@ -19,7 +19,7 @@
     "formidable": "^1.2.1",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "^8.5.1",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "mogoose": "0.0.1-security",
     "mongoose": "^5.7.12",
     "morgan": "~1.9.1",
