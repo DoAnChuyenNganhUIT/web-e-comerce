@@ -12,6 +12,7 @@ var usersRouter = require("./routes/users");
 var category = require("./routes/category");
 var authentication = require("./routes/authentication");
 var passport = require("passport");
+const purchase = require('./routes/purchase');
 var config = require("./configs/database");
 const MyImage = require('./routes/MyImage');
 
@@ -42,11 +43,16 @@ app.set("view engine", "ejs");
 
 app.use(session({
   secret: 'secret',
-  resave: false,
-  saveUninitialized: true
+  resave: true,
+  saveUninitialized: true,
+  cookie: { maxAge: 600000000 }
 }))
 
-app.use(cors());
+app.use(cors({
+  origin:['http://localhost:8081'],
+  methods:['GET','POST'],
+  credentials: true
+}));
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -60,6 +66,7 @@ app.use("/", authentication);
 app.use("/", admin);
 app.use('/', MyImage);
 app.use('/', cart);
+app.use('/',purchase)
 
 //app.use("/",userRouter);
 
@@ -72,12 +79,16 @@ app.use(passport.initialize());
 app.use(passport.session());
 //require('./configs/passport')(passport);
 
+app.use(function(req, res, next) {
+  res.locals.session = req.session;
+  next();
+});
+
 // error handler
 app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
-
   // render the error page
   res.status(err.status || 500);
   res.render("error");

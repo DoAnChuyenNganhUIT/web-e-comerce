@@ -146,8 +146,8 @@ module.exports.getProductId =function(req, res, next) {
 
 module.exports.updateProduct=function(req,res,next){
     let conditions = {}; // la 1 object
-    if(mongoose.Types.ObjectId.isValid(req.body.id)==true){  //xac thuc thuoc tinh cua Oj
-        conditions._id = mongoose.Types.ObjectId(req.body.id);
+    if(mongoose.Types.ObjectId.isValid(req.params.id)==true){  //xac thuc thuoc tinh cua Oj
+        conditions._id = mongoose.Types.ObjectId(req.params.id);
     } else res.json({
         result: false,
         data: {},
@@ -157,9 +157,8 @@ module.exports.updateProduct=function(req,res,next){
     let gtUdt = {};
     if (req.body.name && req.body.name.length > 2) {
         gtUdt.name = req.body.name;
-        gtUdt = req.body;
     }
-    
+    gtUdt = req.body;
 
     const options = {
         new: true,   // tra ve du lieu da chuyen doi thay vi ban goc
@@ -198,7 +197,7 @@ module.exports.updateProduct=function(req,res,next){
 };
  
 module.exports.deleteProduct=(req, res, next)=>{
-    product.findOneAndDelete({_id: mongoose.Types.ObjectId(req.body.id)},(err,user)=>{
+    product.findOneAndDelete({_id: mongoose.Types.ObjectId(req.params.id)},(err,pro)=>{
         if(err){
             res.json({
                 result: false,
@@ -206,7 +205,7 @@ module.exports.deleteProduct=(req, res, next)=>{
             });
             return;
         }
-        if(!user){
+        if(!pro){
             res.json({
                 result: false,
                 message:"san pham khong ton tai"

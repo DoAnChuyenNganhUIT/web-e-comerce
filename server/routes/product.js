@@ -19,10 +19,9 @@ router.get("/get_product_id/:id", controller.getProductId);
 // xuat san pham theo tu khoa tim kiem
 router.get("/find_key", controller.findKey);
 
-router.put("/update_product", controller.updateProduct);
+router.put("/update_product/:id", controller.updateProduct);
 
-router.delete("/delete_product", controller.deleteProduct);
-
+router.delete("/delete_product/:id", controller.deleteProduct);
 
 router.post("/upload_images", controller.uploadImages);
 

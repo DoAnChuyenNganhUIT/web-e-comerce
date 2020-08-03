@@ -108,51 +108,27 @@ exports.getListUser = (req, res, next) => {
                 
         };
         const options = {
-                new: true,   // tra ve du lieu da chuyen doi thay vi ban goc
+                new: true, 
                 multi: true
             };
         
         let gtUdt = {};
-        // User.getUserByEmail(req.body.email, (err,user)=>{
-        //         if(err) throw err;
-        //         if(user) {
-        //                 var NewUser = new User({
-        //                         email: req.body.email,
-        //                         password: req.body.password
-        //                 });
-        //                 res.json({
-        //                         message:'hey'
-        //                 });
         if(req.body.password){
                 var NewUser= new User({
                         password: req.body.password
                 });
                 gtUdt.password=NewUser.password;
         }
-        
-       
-        // User.CreateUser(NewUser,(err, doc)=>{
-        //         if(err) { throw err
-                
-        //         } else {
-        //                 console.log('doc');
-                        
-                        
-        //         };
-                
-
-        // });
-        
-        
-        gtUdt.name = req.body.name;
-
+        if(req.body.name && req.body.name.length >1){
+                gtUdt.name = req.body.name;
+        }
         
         User.findOneAndUpdate(conditions,{$set: gtUdt},options,(err, dataUpdate)=>{
                 if (err) {
                         res.json({
                             result: "failed",
                             data: {},
-                            messege: `Can not update .Error is : ${err}`
+                            message: `Can not update .Error is : ${err}`
                         });
                     } else if(req.body.password){
                         User.CreateUser(dataUpdate,(err, doc)=>{
@@ -162,7 +138,7 @@ exports.getListUser = (req, res, next) => {
                                         res.json({
                                                 result: "ok",
                                                 data: doc,
-                                                messege: "Update successfully"
+                                                message: "Update successfully"
                                             });
                                         
                                 };
@@ -174,7 +150,7 @@ exports.getListUser = (req, res, next) => {
                         res.json({
                                 result: "ok",
                                 data: dataUpdate,
-                                messege: "Update successfully"
+                                message: "Update successfully"
                             });
                     }
         })
@@ -186,20 +162,20 @@ module.exports.deleteUser=function(req, res, next){
                 if(err){
                         res.json({
                             result: "failed",
-                            messege:`khong the xoa . loi ${err}`
+                            message:`khong the xoa . loi ${err}`
                         });
                         return;
                     }
                     if(!user){
                         res.json({
                             result: "failed",
-                            messege:"User khong ton tai"
+                            message:"User khong ton tai"
                         })
                     }
                     else {
                         res.json({
                             result: "ok",
-                            messege:"xoa thanh cong"
+                            message:"xoa thanh cong"
                         })
                     }
         })

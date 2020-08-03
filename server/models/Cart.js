@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+
 module.exports = function Cart(cart) {
     this.items = cart.items || {};
     this.totalItems = cart.totalItems || 0;
@@ -25,6 +25,8 @@ module.exports = function Cart(cart) {
         for (let id in this.items){
             arr.push(this.items[id]);
         }
-        return arr;
+        return {
+            arr
+        };
     };
 };

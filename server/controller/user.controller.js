@@ -150,10 +150,9 @@ module.exports.openImageProfile = (req, res, next) => {
   });
 };
 
-module.exports.changePictureProfile = function (req, res, next) {
+module.exports.changePictureProfile = (req, res, next) =>{
   let conditions = {}; // la 1 object
   if (mongoose.Types.ObjectId.isValid(req.params.id) == true) {
-    //xac thuc thuoc tinh cua Oj
     conditions._id = mongoose.Types.ObjectId(req.params.id);
   } else
     res.json({
