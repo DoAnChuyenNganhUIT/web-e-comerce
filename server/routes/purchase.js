@@ -25,8 +25,13 @@ router.post('/purchase', function(req, res) {
       }
     }, {idempontencyKey})
   })
-  .then(result => res.status(200).json(result))
-  .catch(err => console.log(err))
+  .then(result => 
+    {
+      req.session.card = null
+    res.status(200).json(result)
+    })
+  .catch(err => console.log(err));
+ 
   // stripe.charges.create({
   //   amount: req.body.totalPrice,
   //   source: req.body.stripeTokenId,

@@ -13,6 +13,8 @@ router.post('/insert_user', controller.insertUser);
 
 router.get('/get_user_id/:id', controller.getUserId);
 
+router.get('/cancel-cart/:id', controller.cancelCart)
+
 router.get('/list_users', controller.getListUser);
 router.put('/update_user/:id', controller.updateUser);
 

@@ -27,10 +27,36 @@ module.exports = {
                     data: cart
                 })
             }
-        })
-       
-        
+        }) 
     },
+
+    subCart: async (req, res, next) => {
+        console.log('test')
+        const {id = ''} = req.params;
+        let cart = new Cart(req.session.cart ? req.session.cart : {});
+        Product.findById(id, (err, product) => {
+            if(err){
+                res.json({
+                    success: false
+                })
+            } else {
+                cart.sub(product, id);
+                req.session.cart = cart;
+                req.session.save();
+                // const bill = new Bill({
+                //     userId: req.body.userId,
+                //     totalItems : cart.length;
+                //     totalPrice: 
+                // })
+                res.json({
+                    success: true,
+                    session: req.session.cart,
+                    data: cart
+                })
+            }
+        }) 
+    },
+
     removeCart: async (req, res, next) => {
         const {id = ''} = req.params;
         let cart = new Cart(req.session.cart ? req.session.cart : {});

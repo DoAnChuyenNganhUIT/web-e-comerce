@@ -68,6 +68,17 @@ module.exports.getUserId=function(req, res, next) {
     })
   };
 
+exports.cancelCart = (req, res, next) => {
+        const {id = ''} = req.params;
+        User.findById(id , (err ,uer) => {
+                if(err){ res.json({result: false , message: 'error' })}
+                else if(user){
+                        req.session.cart = null;
+                        res.json({ result: true , message: "success"})
+                }
+        })
+}
+
 exports.getListUser = (req, res, next) => {
         User.find({}).select({
                 name: 1,
