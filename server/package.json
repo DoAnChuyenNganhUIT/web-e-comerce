@@ -18,7 +18,7 @@
     "express-session": "^1.17.0",
     "formidable": "^1.2.1",
     "http-errors": "~1.6.3",
-    "jsonwebtoken": "^8.5.1",
+    "jsonwebtoken": "^9.0.0",
     "lodash": "^4.17.15",
     "mogoose": "0.0.1-security",
     "mongoose": "^5.7.12",
